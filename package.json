@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "A scalable HTTP server with rate limiting and request queuing",
   "dependencies": {
+    "axios": "^1.9.0",
     "dotenv": "^16.5.0",
     "net": "^1.0.2",
     "nodemon": "^3.1.10"
