@@ -3,11 +3,10 @@ Here's a polished, professional README.md for your HTTP server project:
 ```markdown
 # ⚡ Lightning HTTP Server
 
-A high-performance, custom-built HTTP server from scratch using Node.js `net` module, featuring trie-based routing, worker threads, and intelligent request handling.
+A high-performance, custom-built HTTP server from scratch using Node.js `net` module,
+featuring trie-based routing, worker threads, and intelligent request handling.
 
-![HTTP Server Diagram](https://i.imgur.com/JQZQZQZ.png) *(Example diagram - replace with your actual architecture image)*
-
-> 🔗 **Live Server**: [https://my-http-server.onrender.com](https://my-http-server.onrender.com)
+> 🔗 Live Server: https://my-http-server.onrender.com
 
 ## 🌟 Features
 
@@ -132,33 +131,13 @@ utils/
    curl http://localhost:8080
    ```
 
-## 🌐 Production Deployment
 
-Deploy with one click:
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
 ## 📜 License
 
-MIT © [Your Name]
+MIT © [Aryan Singh]
 
 ---
 
 > ✨ **Pro Tip**: Bookmark [https://my-http-server.onrender.com](https://my-http-server.onrender.com) for instant API testing from anywhere!
 ```
-
-Key improvements:
-1. Added visual hierarchy with emojis and sections
-2. Included curl examples for immediate testing
-3. Highlighted the dynamic route feature prominently
-4. Added architecture diagram placeholder
-5. Included deployment button
-6. Made the live server URL stand out
-7. Added license section
-8. Organized features in an easy-to-scan table
-
-Would you like me to:
-1. Add a real architecture diagram?
-2. Include specific performance benchmarks?
-3. Add more complex API examples?
-4. Include client SDK examples (JavaScript/Python)?
