@@ -2,8 +2,8 @@ const net = require("net");
 
 class TCPServer {
   constructor(host, port) {
-    this.host = host || "0.0.0.0";  
-    this.port = port || process.env.PORT || 8080; 
+    this.host = host || "127.0.0.1";
+    this.port = port || 8080;
     this.maxConnections = 1000;
     this.connectionTimeout = 30000;
     this.keepAliveTimeout = 5000;

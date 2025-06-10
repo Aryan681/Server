@@ -7,44 +7,48 @@ const RequestQueue = require("../utils/requestQueue");
 
 class HTTPServer extends TCPServer {
   constructor(host, port) {
-    super(host, port);
+    // Use Render's environment variables if available
+    const actualHost = host || "0.0.0.0";  // Must be 0.0.0.0 for Render
+    const actualPort = port || process.env.PORT || 8080;  // Render provides PORT
+    
+    super(actualHost, actualPort);
+    
     this.router = null;
     this.workerManager = new WorkerManager();
     this.rateLimiter = new SlidingWindowCounter(
       process.env.RATE_LIMIT_WINDOW_MS || 60000,
       process.env.RATE_LIMIT_MAX_REQUESTS || 100
     );
-    this.requestQueue = new RequestQueue(process.env.MAX_QUEUE_SIZE || 1000);
-    this.server = null;
-    this.isShuttingDown = false;
-    this.shutdownPromise = null;
-    this._resolveShutdown = null;
+    this.requestQueue = new RequestQueue(
+      process.env.MAX_QUEUE_SIZE || 1000
+    );
     this.inFlightRequests = 0;
   }
 
-  setRouter(router) {
-    this.router = router;
-  }
-
   async start() {
-    if (this.server) throw new Error('Server is already running');
-
     return new Promise((resolve, reject) => {
+      if (this.server) {
+        reject(new Error('Server is already running'));
+        return;
+      }
+
       this.server = net.createServer({
         keepAlive: true,
         keepAliveInitialDelay: 1000,
         maxConnections: this.maxConnections
       }, this._handleConnection.bind(this));
 
-      this.server.on("error", (error) => {
-        if (error.code === "EADDRINUSE") {
-          reject(new Error(`Port ${this.port} is already in use`));
-        } else reject(error);
+      this.server.on('error', (err) => {
+        console.error('Server error:', err);
+        reject(err);
       });
 
       this.server.listen(this.port, this.host, () => {
-        console.log(`🚀 TCP Server running at http://${this.host}:${this.port}`);
-        console.log(`Maximum concurrent connections: ${this.maxConnections}`);
+        console.log(`🚀 HTTP Server running on http://${this.host}:${this.port}`);
+        
+        // Important for Render - log the actual port being used
+        console.log('Render-compatible server started on port:', this.port);
+        
         resolve();
       });
     });
@@ -312,6 +316,13 @@ class HTTPServer extends TCPServer {
       }
     }
   }
+}
+if (require.main === module) {
+  const server = new HTTPServer();
+  server.start().catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
 }
 
 module.exports = HTTPServer;
