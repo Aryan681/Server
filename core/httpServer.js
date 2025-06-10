@@ -7,7 +7,7 @@ const RequestQueue = require("../utils/requestQueue");
 
 class HTTPServer extends TCPServer {
   constructor(host, port) {
-    const actualHost = host || "127.0.0.1";
+    const actualHost = host || "0.0.0.0";
     const actualPort = port || process.env.PORT || 8080;
     super(actualHost, actualPort);
 
