@@ -7,7 +7,7 @@ const RequestQueue = require("../utils/requestQueue");
 
 class HTTPServer extends TCPServer {
   constructor(host, port) {
-    const actualHost = host || "0.0.0.0";
+    const actualHost = host || "127.0.0.1";
     const actualPort = port || process.env.PORT || 8080;
     super(actualHost, actualPort);
 
@@ -333,11 +333,15 @@ class HTTPServer extends TCPServer {
 }
 
 if (require.main === module) {
+  const Router = require("../utils/router"); // adjust path if needed
+  const router = new Router();
+
   const server = new HTTPServer();
+  server.router = router; // ✅ assign router before starting server
+
   server.start().catch(err => {
     console.error("Failed to start server:", err);
     process.exit(1);
   });
 }
-
 module.exports = HTTPServer;
