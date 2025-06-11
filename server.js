@@ -1,20 +1,56 @@
 const HTTPServer = require("./core/httpServer")
 const Router = require('./utils/router');
+const fs = require('fs');
+const path = require('path');
 const router = new Router();
 
+// Serve the home page
 router.add("GET", "/", (req, res) => {
+  const homePage = fs.readFileSync(path.join(__dirname, 'pages', 'home.html'), 'utf8');
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/plain" },
-    body: "Hello from the Home route"
+    headers: { "Content-Type": "text/html" },
+    body: homePage
   };
 });
 
-router.add("GET", "/about", (req, res) => {
+// Dynamic routes for the demo
+router.add("GET", "/user/:id", (req) => {
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/plain" },
-    body: "About Page"
+    headers: { "Content-Type": "application/json" },
+    body: {
+      message: "User Profile",
+      userId: req.params.id,
+      name: "Demo User",
+      email: "user@example.com"
+    }
+  };
+});
+
+router.add("GET", "/posts/:id", (req) => {
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: {
+      message: "Blog Post",
+      postId: req.params.id,
+      title: "Sample Blog Post",
+      content: "This is a sample blog post content."
+    }
+  };
+});
+
+router.add("GET", "/products/:id", (req) => {
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: {
+      message: "Product Details",
+      productId: req.params.id,
+      name: "Sample Product",
+      price: 99.99
+    }
   };
 });
 

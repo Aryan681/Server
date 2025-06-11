@@ -4,7 +4,9 @@ const parseRequest = require("../utils/parseRequest");
 const WorkerManager = require("../utils/workerManager");
 const SlidingWindowCounter = require("../utils/rateLimiter");
 const RequestQueue = require("../utils/requestQueue");
-
+const fs = require("fs");
+const path = require("path");
+const Router = require("../utils/router");
 class HTTPServer extends TCPServer {
   constructor(host, port) {
     const actualHost = host || "0.0.0.0";
@@ -145,7 +147,16 @@ class HTTPServer extends TCPServer {
             }
           };
         }
-
+  // ✅ Generic POST handler
+  if (!handler && req.method === "POST") {
+    return {
+      statusCode: 200,
+      body: {
+        message: `Received data at ${req.path}`,
+        data: req.body
+      }
+    };
+  }
         return handler(req);
       }, priority);
 
@@ -333,13 +344,22 @@ class HTTPServer extends TCPServer {
 }
 
 if (require.main === module) {
-  const Router = require("../utils/router"); // adjust path if needed
   const router = new Router();
 
-  const server = new HTTPServer();
-  server.router = router; // ✅ assign router before starting server
+  
+  router.add("GET", "/", (req, res) => {
+    const homePage = fs.readFileSync(path.join(__dirname, "../pages/home.html"), "utf8");
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "text/html" },
+      body: homePage
+    };
+  });
 
-  server.start().catch(err => {
+  const server = new HTTPServer();
+  server.router = router; // assign the router
+
+  server.start().catch((err) => {
     console.error("Failed to start server:", err);
     process.exit(1);
   });
